@@ -10,6 +10,7 @@ void goodbye_text();
 void dog();
 // ----------------- END TEXT IN PROGRAM -----------------
 // ----------------- RANDOM -----------------
+// Change RAND FUNC.
 int choiseRandom(int _min, int _max) {
     uint64_t srand(time(NULL));
     int Random_numberGuessing = (_min + rand() % (_max - _min + 1));
@@ -17,6 +18,8 @@ int choiseRandom(int _min, int _max) {
 }
 // ----------------- END RANDOM -----------------
 // ----------------- CHECK SIZE STRING -----------------
+// Why args so strange? non const string and & to int and const
+// Why this func is string type?
 std::string string_number_size(std::string& size_number, const int& size_min, const int& size_max) {
     while (size_number.size() > 1) {
         std::cout << "Не корректное значение!!!!" << "\n";
@@ -29,11 +32,14 @@ std::string string_number_size(std::string& size_number, const int& size_min, co
 }
 // ----------------- END CHECK SIZE STRING -----------------    
 // ----------------- CHECK NUMBER STRING-----------------
+// Why args so strange? non const string and & to int and const
+// Why this func is string type?
 std::string good_min_max(std::string& s_number, const int& min, const int& max) {
     int i_number = (s_number[0] - 48);
     while (((i_number < min) || (i_number > max)) && (s_number.size() == 1)) {
         if (i_number == 65 || i_number == 33) {
             goodbye_text();
+            // BAD PRACTICE!!
             exit(0);
         }
         std::cout << "Не корректное значение!!!!" << "\n";
@@ -53,7 +59,7 @@ std::string good_min_max(std::string& s_number, const int& min, const int& max) 
 
 int main() {
     setlocale(0, "");
-    std::string string_number = "0";
+    std::string string_number = "0";   //WHY?
     int min = 1;
     int max = 6;
     int global_attempt = 3;
@@ -72,7 +78,9 @@ int main() {
         }
         good_min_max(string_number, min, max);
         int i_string_number = (string_number[0] - 48);
+        //BAD LOGIC STATEMENT
         if ((attempt == 1) && (i_string_number != numberGuessing)) {
+            //in loose and win i see the same actions with only 1 string difference is possible to do one func?
             system("cls");  // clearing cmd windows
             std::cout << "\n";
             std::cout << "------------------------------------" << "\n";
@@ -168,3 +176,4 @@ void dog() {
     std::cout << "  ========#+++++++++++++#=========" << "\n";
     std::cout << "\n";
 }
+

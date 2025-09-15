@@ -10,10 +10,12 @@ void goodbye_text();
 void dog();
 // ----------------- END TEXT IN PROGRAM -----------------
 // ----------------- RANDOM -----------------
-// Change RAND FUNC.
+// Change RAND FUNC. (Done)
 int choiseRandom(int _min, int _max) {
-    uint64_t srand(time(NULL));
-    int Random_numberGuessing = (_min + rand() % (_max - _min + 1));
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(_min, _max);
+    int Random_numberGuessing = distr(gen);
     return Random_numberGuessing;
 }
 // ----------------- END RANDOM -----------------
@@ -176,4 +178,5 @@ void dog() {
     std::cout << "  ========#+++++++++++++#=========" << "\n";
     std::cout << "\n";
 }
+
 

@@ -1,2 +1,0 @@
-C:\Users\Slayer\source\repos\GTN\x64\Debug\GTN.exe.lastcodeanalysissucceeded
-C:\Users\Slayer\source\repos\GTN\GTN\x64\Debug\NativeCodeAnalysis.read.1.tlog

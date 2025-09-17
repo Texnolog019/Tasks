@@ -1,182 +1,139 @@
 ﻿#include <iostream>
 #include <ctime>
 #include <cstdint>
+#include <string>
+#include <random>
 
 // ----------------- TEXT IN PROGRAM -----------------
-void first_text(int text_min, int text_max, const int& global_attempt);
-void text_hidden_number(const int& _global_attempt);
-void text_lose_win();
+void first_text(int ft_min, int ft_max, int ft_global_attempt);
+void text_hidden_number(int thn_global_attempt);
+void text_uncorected_number(int tun_min, int tun_max);
+void text_lose_win(std::string text_s_lose_win);
 void goodbye_text();
-void dog();
 // ----------------- END TEXT IN PROGRAM -----------------
 // ----------------- RANDOM -----------------
-// Change RAND FUNC. (Done)
 int choiseRandom(int _min, int _max) {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distr(_min, _max);
+    std::uniform_int_distribution <> distr(_min, _max);
     int Random_numberGuessing = distr(gen);
     return Random_numberGuessing;
 }
 // ----------------- END RANDOM -----------------
-// ----------------- CHECK SIZE STRING -----------------
-// Why args so strange? non const string and & to int and const
-// Why this func is string type?
-std::string string_number_size(std::string& size_number, const int& size_min, const int& size_max) {
-    while (size_number.size() > 1) {
-        std::cout << "Не корректное значение!!!!" << "\n";
-        std::cout << "Выбери число в диапазоне от " << size_min << " до " << size_max << "\n";
-        std::cout << "\n";
-        std::cout << "Твой выбор : ";
-        std::cin >> size_number;
+// ----------------- CHECK (INT) NUMBER -----------------
+int good_min_max(const int& i_number, int min, int max) {
+    if (i_number < min || i_number > max) {
+        return 1;
     }
-    return size_number;
+    return 0;
 }
-// ----------------- END CHECK SIZE STRING -----------------    
-// ----------------- CHECK NUMBER STRING-----------------
-// Why args so strange? non const string and & to int and const
-// Why this func is string type?
-std::string good_min_max(std::string& s_number, const int& min, const int& max) {
-    int i_number = (s_number[0] - 48);
-    while (((i_number < min) || (i_number > max)) && (s_number.size() == 1)) {
-        if (i_number == 65 || i_number == 33) {
-            goodbye_text();
-            // BAD PRACTICE!!
-            exit(0);
-        }
-        std::cout << "Не корректное значение!!!!" << "\n";
-        std::cout << "Выбери число в диапазоне от " << min << " до " << max << "\n";
-        std::cout << "\n";
-        std::cout << "Твой выбор : ";
-        std::cin >> s_number;
-        if (s_number.size() > 1) {
-            string_number_size(s_number, min, max);
-        }
-        i_number = (s_number[0] - 48);
-    }
-    return s_number;
-}
-// ----------------- END CHEK NUMBER STRING -----------------
-
+// ----------------- END CHEK (INT) NUMBER -----------------
 
 int main() {
     setlocale(0, "");
-    std::string string_number = "0";   //WHY?
+    std::string string_number = "0";
     int min = 1;
     int max = 6;
     int global_attempt = 3;
+    int i_number = 0;
+    int ptr = 0;
+    int numberGuessing = 0;
     int attempt = global_attempt;
-    int numberGuessing = choiseRandom(min, max);
+    std::string text_s_lose_win = "0";
     first_text(min, max, global_attempt);
     while (true) {
-        if (attempt == global_attempt) {
+        if (attempt == global_attempt && ptr == 0) {
             text_hidden_number(global_attempt);
+            ++ptr;
+            numberGuessing = choiseRandom(min, max);
         }
         std::cout << "\n";
         std::cout << "Твой выбор : ";
-        std::cin >> string_number;
-        if (string_number.size() > 1) {
-            string_number_size(string_number, min, max);
+        getline(std::cin, string_number);
+        // ----------------- CHECK STRIGN SIZE -----------------
+        if ((string_number.size()) != 1) {
+            text_uncorected_number(min, max);
+            continue;
         }
-        good_min_max(string_number, min, max);
-        int i_string_number = (string_number[0] - 48);
-        //BAD LOGIC STATEMENT
-        if ((attempt == 1) && (i_string_number != numberGuessing)) {
-            //in loose and win i see the same actions with only 1 string difference is possible to do one func?
-            system("cls");  // clearing cmd windows
-            std::cout << "\n";
-            std::cout << "------------------------------------" << "\n";
-            std::cout << "|           Ты проиграл =(         |" << "\n";
-            std::cout << "------------------------------------" << "\n";
-            dog();
+        // ----------------- CHECK QUIT -----------------
+        if ((string_number[0] == 'q') || (string_number[0] == 'Q')) {
+            goodbye_text();
+            exit(0);
+        }
+        // ----------------- CHECK (INT) NUMBER -----------------
+        i_number = (string_number[0] - 48); 
+        if (good_min_max(i_number, min, max) == 1) {
+            text_uncorected_number(min, max);
+            continue;
+        }
+        if (attempt == 1) {
+            text_s_lose_win = "Ты проиграл =(";
+            text_lose_win(text_s_lose_win);
             attempt = global_attempt;
-            numberGuessing = choiseRandom(min, max);
-            text_lose_win();
-        }
-        else if (i_string_number > numberGuessing) {
+            ptr = 0;
+        }else if (i_number == numberGuessing) {
+            text_s_lose_win = " Ты выиграл =)";
+            attempt = global_attempt;
+            text_lose_win(text_s_lose_win);
+            ptr = 0;
+        }else if (i_number > numberGuessing) {
             std::cout << "Загаданное число меньше" << "\n";
             --attempt;
-        }
-        else if (i_string_number < numberGuessing) {
+        }else if (i_number < numberGuessing) {
             std::cout << "Загаданное число больше" << "\n";
             --attempt;
-        }
-        else {
-            system("cls"); // clearing cmd windows
-            std::cout << "\n";
-            std::cout << "------------------------------------" << "\n";
-            std::cout << "|           Ты выиграл =)          |" << "\n";
-            std::cout << "------------------------------------" << "\n";
-            attempt = global_attempt;
-            numberGuessing = choiseRandom(min, max);
-            text_lose_win();
         }
     }
 }
 
-// ----------------- TEXT IN PROGRAM ----------------- 
 
-void first_text(int text_min, int text_max, const int& global_attempt) {
+// ----------------- TEXT IN PROGRAM -----------------
+void first_text(int ft_min, int ft_max, int ft_global_attempt) {
     std::cout << "\n";
-    std::cout << "------------------------------------" << "\n";
-    std::cout << "|         Сыграем в игру?          |" << "\n";
-    std::cout << "------------------------------------" << "\n";
-    std::cout << "|    Я загадал число от " << text_min << " до " << text_max << "     |" << "\n";
-    std::cout << "|      попробуй его отгадать       |" << "\n";
-    std::cout << "|         У тебя " << global_attempt << " попытки         | " << "\n";
-    std::cout << "------------------------------------" << "\n";
-    std::cout << "|    Для выхода из игры введи 'q'  |" << "\n";
-    std::cout << "------------------------------------" << "\n";
-    std::cout << "|           Введи число            |" << "\n";
-    std::cout << "------------------------------------" << "\n";
+    std::cout << "--------------------------------------" << "\n";
+    std::cout << "|          Сыграем в игру?           |" << "\n";
+    std::cout << "--------------------------------------" << "\n";
+    std::cout << "|     Я загадал число от " << ft_min << " до " << ft_max << "      |" << "\n";
+    std::cout << "|       попробуй его отгадать        |" << "\n";
+    std::cout << "|          У тебя " << ft_global_attempt << " попытки          | " << "\n";
+    std::cout << "--------------------------------------" << "\n";
+    std::cout << "|Для выхода из игры введи 'q' или 'Q'|" << "\n";
+    std::cout << "--------------------------------------" << "\n";
+    std::cout << "|             Введи число            |" << "\n";
+    std::cout << "--------------------------------------" << "\n";
 }
 
-void text_hidden_number(const int& _global_attempt) {
+void text_hidden_number(int thn_global_attempt) {
     std::cout << "\n";
-    std::cout << "------------------------------------" << "\n";
-    std::cout << "|       Новое число загадано       |" << "\n";
-    std::cout << "|         У тебя " << _global_attempt << " попытки         | " << "\n";
-    std::cout << "------------------------------------" << "\n";
+    std::cout << "--------------------------------------" << "\n";
+    std::cout << "|        Новое число загадано        |" << "\n";
+    std::cout << "|          У тебя " << thn_global_attempt << " попытки          | " << "\n";
+    std::cout << "--------------------------------------" << "\n";
 }
 
-void text_lose_win() {
+void text_uncorected_number(int tun_min, int tun_max) {
+    std::cout << "Не корректное значение!!!!" << "\n";
+    std::cout << "Выбери число в диапазоне от " << tun_min << " до " << tun_max << "\n";
+}
+
+void text_lose_win(std::string text_s_lose_win) {
+    system("cls"); // clearing cmd windows
+    std::cout << "------------------------------------" << "\n";
+    std::cout << "|           " << text_s_lose_win << "          |" << "\n";
+    std::cout << "------------------------------------" << "\n";
     std::cout << "\n";
-    std::cout << "------------------------------------" << "\n";
-    std::cout << "|           Сыграем ещё?           |" << "\n";
-    std::cout << "------------------------------------" << "\n";
-    std::cout << "|    Для продолжения введи число   |" << "\n";
-    std::cout << "|    Для выхода из игры введи 'q'  |" << "\n";
-    std::cout << "------------------------------------" << "\n";
+    std::cout << "--------------------------------------" << "\n";
+    std::cout << "|            Сыграем ещё?            |" << "\n";
+    std::cout << "--------------------------------------" << "\n";
+    std::cout << "|     Для продолжения введи число    |" << "\n";
+    std::cout << "|Для выхода из игры введи 'q' или 'Q'|" << "\n";
+    std::cout << "--------------------------------------" << "\n";
 }
 
 void goodbye_text() {
-    std::cout << "------------------------------------" << "\n";
-    std::cout << "| Ты решил выйти из игры выбрав 'q'|" << "\n";
-    std::cout << "|         Спасибо за игру          |" << "\n";
-    std::cout << "|            Заходи ещё            |" << "\n";
-    std::cout << "------------------------------------" << "\n";
+    std::cout << "--------------------------------------" << "\n";
+    std::cout << "|  Ты решил выйти из игры выбрав 'q' |" << "\n";
+    std::cout << "|          Спасибо за игру           |" << "\n";
+    std::cout << "|             Заходи ещё             |" << "\n";
+    std::cout << "--------------------------------------" << "\n";
 }
-
-void dog() {
-    std::cout << "\n";
-    std::cout << "  =====+@@@@===========@@@@===@===" << "\n";
-    std::cout << "  ====@@@@@@@@+++++++@@@@@@@@@@===" << "\n";
-    std::cout << "  ===@@@@===@+@..++.@+@===@@@@+===" << "\n";
-    std::cout << "  ===@@@@===+@@.++ @.@+===========" << "\n";
-    std::cout << "  ====@@====+@  .++  @+===========" << "\n";
-    std::cout << "  =====@===...+ @@@@@+..==========" << "\n";
-    std::cout << "  ========.@  @ .@@.@. @.=========" << "\n";
-    std::cout << "  ======++.    @   @.    +++======" << "\n";
-    std::cout << "  =====+++ .@    @ .. ..@++++=====" << "\n";
-    std::cout << "  ====+++@+@   @  .++@++@@++++====" << "\n";
-    std::cout << "  ====#+++@+++.   .@++++@++++++===" << "\n";
-    std::cout << "  ====#++++++@@@@@+++++++++@+++===" << "\n";
-    std::cout << "  =====*+++++++++#++##+++++++++===" << "\n";
-    std::cout << "  =====++++++++++@+++++#+++++#====" << "\n";
-    std::cout << "  ========###+@+++#+++++#=###=====" << "\n";
-    std::cout << "  ========#++###@+++++++#=========" << "\n";
-    std::cout << "  ========#+++++++++++++#=========" << "\n";
-    std::cout << "\n";
-}
-
-

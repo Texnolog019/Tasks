@@ -118,9 +118,9 @@ void text_uncorected_number(int tun_min, int tun_max) {
 
 void text_lose_win(std::string text_s_lose_win) {
     system("cls"); // clearing cmd windows
-    std::cout << "------------------------------------" << "\n";
-    std::cout << "|           " << text_s_lose_win << "          |" << "\n";
-    std::cout << "------------------------------------" << "\n";
+    std::cout << "--------------------------------------" << "\n";
+    std::cout << "|            " << text_s_lose_win << "          |" << "\n";
+    std::cout << "--------------------------------------" << "\n";
     std::cout << "\n";
     std::cout << "--------------------------------------" << "\n";
     std::cout << "|            Сыграем ещё?            |" << "\n";
@@ -137,3 +137,4 @@ void goodbye_text() {
     std::cout << "|             Заходи ещё             |" << "\n";
     std::cout << "--------------------------------------" << "\n";
 }
+
